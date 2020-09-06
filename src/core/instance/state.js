@@ -23,7 +23,7 @@ import {
   handleError,
   nativeWatch,
   validateProp,
-  isPlainObject,
+  isPlainObject,//_toString.call(obj) === '[object Object]'
   isServerRendering,
   isReservedAttribute
 } from '../util/index'
@@ -129,6 +129,7 @@ function initData (vm: Component) {
   let i = keys.length
   while (i--) {
     const key = keys[i]
+    //有键名重复
     if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
@@ -137,6 +138,7 @@ function initData (vm: Component) {
         )
       }
     }
+    //在props中已定义
     if (props && hasOwn(props, key)) {
       process.env.NODE_ENV !== 'production' && warn(
         `The data property "${key}" is already declared as a prop. ` +
@@ -220,7 +222,7 @@ export function defineComputed (
     sharedPropertyDefinition.set = noop
   } else {
     sharedPropertyDefinition.get = userDef.get
-      ? shouldCache && userDef.cache !== false
+      ? shouldCache && userDef.cache !== false //不知道什么时候cache会是false
         ? createComputedGetter(key)
         : createGetterInvoker(userDef.get)
       : noop

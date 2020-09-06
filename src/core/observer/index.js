@@ -116,10 +116,10 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     ob = value.__ob__
   } else if (
     shouldObserve &&
-    !isServerRendering() &&
-    (Array.isArray(value) || isPlainObject(value)) &&
-    Object.isExtensible(value) &&
-    !value._isVue
+    !isServerRendering() &&//非服务端
+    (Array.isArray(value) || isPlainObject(value)) && //是数组或纯对象
+    Object.isExtensible(value) && //可扩展的
+    !value._isVue//不是Vue实例
   ) {
     ob = new Observer(value)
   }

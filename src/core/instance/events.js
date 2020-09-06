@@ -45,11 +45,11 @@ export function updateComponentListeners (
   oldListeners: ?Object
 ) {
   target = vm
-  updateListeners(listeners, oldListeners || {}, add, remove, createOnceHandler, vm)
+  updateListeners(listeners, oldListeners || {}, add, remove, createOnceHandler, vm)// 猜测更新listeners，并将它加入到target这个闭包中
   target = undefined
 }
 
-export function eventsMixin (Vue: Class<Component>) {
+export function eventsMixin (Vue: Class<Component>) { //在 ./core/instance/index  调用
   const hookRE = /^hook:/
   Vue.prototype.$on = function (event: string | Array<string>, fn: Function): Component {
     const vm: Component = this
@@ -135,7 +135,7 @@ export function eventsMixin (Vue: Class<Component>) {
       const args = toArray(arguments, 1)
       const info = `event handler for "${event}"`
       for (let i = 0, l = cbs.length; i < l; i++) {
-        invokeWithErrorHandling(cbs[i], vm, args, vm, info)
+        invokeWithErrorHandling(cbs[i], vm, args, vm, info)//todo 为什么要直接掉errorHandling。是会调用cbs[i]
       }
     }
     return vm

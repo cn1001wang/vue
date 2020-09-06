@@ -73,6 +73,8 @@ export function createPatchFunction (backend) {
 
   const { modules, nodeOps } = backend
 
+  // attrs,  klass,  events,  domProps,  style, 只有{create,update}, transition 有{create: _enter,  activate: _enter,  remove},
+  // ref 和 directive 有{create,update,destroy}  
   for (i = 0; i < hooks.length; ++i) {
     cbs[hooks[i]] = []
     for (j = 0; j < modules.length; ++j) {
@@ -192,7 +194,7 @@ export function createPatchFunction (backend) {
         if (isDef(data)) {
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
-        insert(parentElm, vnode.elm, refElm)
+        insert(parentElm, vnode.elm, refElm)//这一步执行完之后就会真的把创建出的新dom插入
       }
 
       if (process.env.NODE_ENV !== 'production' && data && data.pre) {
@@ -268,11 +270,11 @@ export function createPatchFunction (backend) {
     // a reactivated keep-alive component doesn't insert itself
     insert(parentElm, vnode.elm, refElm)
   }
-
+//往 他下一个节点前面插入 ，没下一个节点就查到最后一个节点
   function insert (parent, elm, ref) {
     if (isDef(parent)) {
       if (isDef(ref)) {
-        if (nodeOps.parentNode(ref) === parent) {
+        if (nodeOps.parentNode(ref) === parent) {//如果这下一个节点和要插入的parent不是同一个，则证明出问题了，就不插入了
           nodeOps.insertBefore(parent, elm, ref)
         }
       } else {
@@ -709,7 +711,7 @@ export function createPatchFunction (backend) {
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true
-      createElm(vnode, insertedVnodeQueue)
+      createElm(vnode, insertedVnodeQueue)//todo 对这个queue做了什么，让他能够从子到父 执行
     } else {
       const isRealElement = isDef(oldVnode.nodeType)
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
@@ -720,10 +722,12 @@ export function createPatchFunction (backend) {
           // mounting to a real element
           // check if this is server-rendered content and if we can perform
           // a successful hydration.
+          //服务端渲染，不用管
           if (oldVnode.nodeType === 1 && oldVnode.hasAttribute(SSR_ATTR)) {
             oldVnode.removeAttribute(SSR_ATTR)
             hydrating = true
           }
+          // 服务端
           if (isTrue(hydrating)) {
             if (hydrate(oldVnode, vnode, insertedVnodeQueue)) {
               invokeInsertHook(vnode, insertedVnodeQueue, true)
@@ -740,6 +744,7 @@ export function createPatchFunction (backend) {
           }
           // either not server-rendered, or hydration failed.
           // create an empty node and replace it
+          // 对于 oldVnode为真实Dom节点，这里会被转成vnode形式
           oldVnode = emptyNodeAt(oldVnode)
         }
 

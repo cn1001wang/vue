@@ -38,7 +38,7 @@ const resolve = p => {
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
-    entry: resolve('web/entry-runtime.js'),
+    entry: resolve('web/entry-runtime.js'),//__dirname\src\platforms\web\entry-runtime.js
     dest: resolve('dist/vue.runtime.common.dev.js'),
     format: 'cjs',
     env: 'development',
@@ -269,3 +269,26 @@ if (process.env.TARGET) {
   exports.getBuild = genConfig
   exports.getAllBuilds = () => Object.keys(builds).map(genConfig)
 }
+
+// ['web-runtime-cjs-dev','web-runtime-cjs-prod'].map(name=>{
+//   var opts=builds[name]
+//   return  {
+//     input: opts.entry,
+//     external: opts.external,
+//     plugins: [
+//       flow(),
+//       alias(Object.assign({}, aliases, opts.alias))
+//     ].concat(opts.plugins || []),
+//     output: {
+//       file: opts.dest,
+//       format: opts.format,
+//       banner: opts.banner,
+//       name: opts.moduleName || 'Vue'
+//     },
+//     onwarn: (msg, warn) => {
+//       if (!/Circular/.test(msg)) {
+//         warn(msg)
+//       }
+//     }
+//   }
+// })

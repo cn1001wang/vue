@@ -46,6 +46,7 @@ export function initRender (vm: Component) {
       !isUpdatingChildComponent && warn(`$listeners is readonly.`, vm)
     }, true)
   } else {
+    //todo $attrs和$listeners怎么传下去的
     defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true)
     defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true)
   }
@@ -80,7 +81,7 @@ export function renderMixin (Vue: Class<Component>) {
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
-    vm.$vnode = _parentVnode
+    vm.$vnode = _parentVnode//todo
     // render self
     let vnode
     try {
@@ -88,7 +89,8 @@ export function renderMixin (Vue: Class<Component>) {
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm
-      vnode = render.call(vm._renderProxy, vm.$createElement)
+      //vm.$createElement,定义在上面initRender函数中，调用在./init(initRender()) <- ./index(this._init(ops)) <- new Vue(ops) 
+      vnode = render.call(vm._renderProxy, vm.$createElement)//done 先记着_renderProxy 就是vm实例
     } catch (e) {
       handleError(e, vm, `render`)
       // return error render result,
@@ -114,6 +116,7 @@ export function renderMixin (Vue: Class<Component>) {
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
       if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
+        //根节点具有多个vnode不行
         warn(
           'Multiple root nodes returned from render function. Render function ' +
           'should return a single root node.',

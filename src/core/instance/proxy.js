@@ -15,6 +15,7 @@ if (process.env.NODE_ENV !== 'production') {
 
   const warnNonPresent = (target, key) => {
     warn(
+      //有属性key未定义就使用
       `Property or method "${key}" is not defined on the instance but ` +
       'referenced during render. Make sure that this property is reactive, ' +
       'either in the data option, or for class-based components, by ' +
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
 
   const warnReservedPrefix = (target, key) => {
     warn(
+      //如果传入的data中带有$,_开头的是不允许的
       `Property "${key}" must be accessed with "$data.${key}" because ` +
       'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
       'prevent conflicts with Vue internals. ' +

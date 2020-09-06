@@ -78,7 +78,7 @@ export default class Watcher {
     // parse expression for getter
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
-    } else {
+    } else {//只支持" a.b "形式
       this.getter = parsePath(expOrFn)
       if (!this.getter) {
         this.getter = noop
@@ -90,6 +90,7 @@ export default class Watcher {
         )
       }
     }
+    //不是lazy立马执行
     this.value = this.lazy
       ? undefined
       : this.get()
@@ -103,6 +104,9 @@ export default class Watcher {
     let value
     const vm = this.vm
     try {
+      //this.getter ===> updateComponent = () => {
+      //   vm._update(vm._render(), hydrating)
+      // }
       value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {

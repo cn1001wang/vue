@@ -33,7 +33,7 @@ export function initLifecycle (vm: Component) {
   const options = vm.$options
 
   // locate first non-abstract parent
-  let parent = options.parent
+  let parent = options.parent //todo 从来没传过parent选项，这是从哪里来的
   if (parent && !options.abstract) {
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
@@ -186,6 +186,7 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
+    //hydrating服务端渲染相关，browser下是false
     updateComponent = () => {
       vm._update(vm._render(), hydrating)
     }
@@ -205,7 +206,7 @@ export function mountComponent (
 
   // manually mounted instance, call mounted on self
   // mounted is called for render-created child components in its inserted hook
-  if (vm.$vnode == null) {
+  if (vm.$vnode == null) {//vm.$vnode 如果为 null，则表明这不是一次组件的初始化过程，而是我们通过外部 new Vue 初始化过程。
     vm._isMounted = true
     callHook(vm, 'mounted')
   }

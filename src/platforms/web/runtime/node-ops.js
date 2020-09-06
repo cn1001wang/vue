@@ -1,5 +1,5 @@
 /* @flow */
-
+//操作外部dom的方法
 import { namespaceMap } from 'web/util/index'
 
 export function createElement (tagName: string, vnode: VNode): Element {

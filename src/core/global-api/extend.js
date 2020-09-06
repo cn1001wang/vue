@@ -21,7 +21,7 @@ export function initExtend (Vue: GlobalAPI) {
     const Super = this
     const SuperId = Super.cid
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
-    if (cachedCtors[SuperId]) {
+    if (cachedCtors[SuperId]) {//SuperId一样代表 他们是基于同一个父构造器继承而来的。//进行缓存，下次来就不用创建了
       return cachedCtors[SuperId]
     }
 
@@ -35,11 +35,11 @@ export function initExtend (Vue: GlobalAPI) {
     }
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
-    Sub.cid = cid++
-    Sub.options = mergeOptions(
+    Sub.cid = cid++ //这里的自增逻辑是因为，每一个组件他都是可以基于它来进行extend，此时他的cid就需要一个全新的缓存
+    Sub.options = mergeOptions(//合并时候 如果super和 extendOptions冲突 ，只等于后者不会去将两者组合 //待验证，之前写的注释，忘了是不是这么回事了
       Super.options,
       extendOptions
-    )
+    )//会用Super.options创建新options，作为他的原型
     Sub['super'] = Super
 
     // For props and computed properties, we define the proxy getters on
@@ -62,6 +62,7 @@ export function initExtend (Vue: GlobalAPI) {
     ASSET_TYPES.forEach(function (type) {
       Sub[type] = Super[type]
     })
+    // 不知道在哪里用到
     // enable recursive self-lookup
     if (name) {
       Sub.options.components[name] = Sub

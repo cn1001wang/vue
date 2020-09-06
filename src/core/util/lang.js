@@ -27,6 +27,7 @@ export function def (obj: Object, key: string, val: any, enumerable?: boolean) {
   })
 }
 
+//todo 什么情况下会进到这里
 /**
  * Parse simple path.
  */

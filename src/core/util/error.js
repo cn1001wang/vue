@@ -47,7 +47,7 @@ export function invokeWithErrorHandling (
       res.catch(e => handleError(e, vm, info + ` (Promise/async)`))
       // issue #9511
       // avoid catch triggering multiple times when nested calls
-      res._handled = true
+      res._handled = true //为什么要这样避免重复handler被调用 ，返回值的引用会一样？？
     }
   } catch (e) {
     handleError(e, vm, info)

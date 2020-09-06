@@ -400,13 +400,14 @@ export function mergeOptions (
 
   normalizeProps(child, vm)
   normalizeInject(child, vm)
-  normalizeDirectives(child)
+  normalizeDirectives(child) // 处理指令是function情况 代表他的 bind,update都是这个fn
 
   // Apply extends and mixins on the child options,
   // but only if it is a raw options object that isn't
   // the result of another mergeOptions call.
   // Only merged options has the _base property.
   if (!child._base) {
+    //extends，mixins应该是 会直接挂到 vm下 。跳过
     if (child.extends) {
       parent = mergeOptions(parent, child.extends, vm)
     }

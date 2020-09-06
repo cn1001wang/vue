@@ -12,8 +12,9 @@ let builds = require('./config').getAllBuilds()
 
 // filter builds via command line arg
 if (process.argv[2]) {
-  const filters = process.argv[2].split(',')
+  const filters = process.argv[2].split(',')//[TARGET:web-full-dev]
   builds = builds.filter(b => {
+    //b.output.file ==> dest: resolve('dist/vue.js'),
     return filters.some(f => b.output.file.indexOf(f) > -1 || b._name.indexOf(f) > -1)
   })
 } else {

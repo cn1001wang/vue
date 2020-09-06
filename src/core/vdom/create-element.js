@@ -7,11 +7,11 @@ import { traverse } from '../observer/traverse'
 
 import {
   warn,
-  isDef,
-  isUndef,
+  isDef,//v !== undefined && v !== null
+  isUndef,//v === undefined || v === null
   isTrue,
   isObject,
-  isPrimitive,
+  isPrimitive,//原始类型，string,boolean,symbol,number
   resolveAsset
 } from '../util/index'
 
@@ -38,7 +38,7 @@ export function createElement (
     children = data
     data = undefined
   }
-  if (isTrue(alwaysNormalize)) {
+  if (isTrue(alwaysNormalize)) {//只有手写createElement就会让normalizationType变为2
     normalizationType = ALWAYS_NORMALIZE
   }
   return _createElement(context, tag, data, children, normalizationType)
@@ -51,6 +51,7 @@ export function _createElement (
   children?: any,
   normalizationType?: number
 ): VNode | Array<VNode> {
+  //data不能是响应式的 
   if (isDef(data) && isDef((data: any).__ob__)) {
     process.env.NODE_ENV !== 'production' && warn(
       `Avoid using observed data object as vnode data: ${JSON.stringify(data)}\n` +
@@ -67,6 +68,7 @@ export function _createElement (
     // in case of component :is set to falsy value
     return createEmptyVNode()
   }
+  //key必须原始类型
   // warn against non-primitive key
   if (process.env.NODE_ENV !== 'production' &&
     isDef(data) && isDef(data.key) && !isPrimitive(data.key)
@@ -87,6 +89,7 @@ export function _createElement (
     data.scopedSlots = { default: children[0] }
     children.length = 0
   }
+  //? 为什么需要这样设置 手写会进到normalizeCChildren
   if (normalizationType === ALWAYS_NORMALIZE) {
     children = normalizeChildren(children)
   } else if (normalizationType === SIMPLE_NORMALIZE) {
@@ -96,7 +99,7 @@ export function _createElement (
   if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
-    if (config.isReservedTag(tag)) {
+    if (config.isReservedTag(tag)) {//平台原生节点 浏览器节点div,p...
       // platform built-in elements
       if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn)) {
         warn(
@@ -108,10 +111,10 @@ export function _createElement (
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       )
-    } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+    } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {//判断是不是局部组件是组件节点
       // component
       vnode = createComponent(Ctor, data, context, children, tag)
-    } else {
+    } else {//不认识节点
       // unknown or unlisted namespaced elements
       // check at runtime because it may get assigned a namespace when its
       // parent normalizes children
@@ -121,6 +124,7 @@ export function _createElement (
       )
     }
   } else {
+    // 初步理解 函数类型的组件
     // direct component options / constructor
     vnode = createComponent(tag, data, context, children)
   }
